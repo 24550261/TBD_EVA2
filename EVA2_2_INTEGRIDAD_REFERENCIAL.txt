@@ -1,0 +1,239 @@
+Microsoft Windows [Version 10.0.26200.9457]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\Javis>mysqlsh
+MySQL Shell 8.4.5
+
+Copyright (c) 2016, 2025, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+ MySQL  SQL > \connect --mc root@localhost
+Creating a Classic session to 'root@localhost'
+MySQL Error 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (10061)
+ MySQL  SQL > \connect --mc root@localhost
+Creating a Classic session to 'root@localhost'
+Fetching global names for auto-completion... Press ^C to stop.
+Your MySQL connection id is 8
+Server version: 10.4.32-MariaDB mariadb.org binary distribution
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306  SQL > use t2
+Default schema set to `t2`.
+Fetching global names, object names from `t2` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306  t2  SQL > show tables;
++--------------+
+| Tables_in_t2 |
++--------------+
+| tablaa       |
+| tablab       |
++--------------+
+2 rows in set (0.0017 sec)
+ MySQL  localhost:3306  t2  SQL > create table cliente(
+                               -> id_cliente int not null key auto_increment,
+                               -> nombre varchar(50) not null,
+                               -> apellidos varchar(50) not null
+                               -> , fecha_nac date;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '' at line 5
+ MySQL  localhost:3306  t2  SQL > create table cliente( id_cliente int not null key auto_increment, nombre varchar(50) not null, apellidos varchar(50) not null , fecha_nac date);
+Query OK, 0 rows affected (0.0198 sec)
+ MySQL  localhost:3306  t2  SQL > insert into cliente (nombre, apellidos, fecha_nac)
+                               -> value ('Juan, 'Perez', '2006-11-16');
+                               '> '
+                               -> '
+                               '> '
+                               -> '
+                               '> ;
+                               '> ;
+                               '> ;
+                               '>
+                               '> ^C
+ MySQL  localhost:3306  t2  SQL > insert into cliente (nombre, apellidos, fecha_nac)
+                               -> value ('Juan', 'Perez', '2007-05-05');
+ERROR: 2013 (HY000): Lost connection to MySQL server during query
+The global session got disconnected..
+Attempting to reconnect to 'mysql://root@localhost:3306/t2'....
+The global session was successfully reconnected.
+ MySQL  localhost:3306  t2  SQL > ;
+ERROR: 1065 (42000): Query was empty
+ MySQL  localhost:3306  t2  SQL > insert into cliente (nombre, apellidos, fecha_nac) value ('Juan', 'Perez', '2007-05-05');
+Query OK, 1 row affected (0.0923 sec)
+ MySQL  localhost:3306  t2  SQL > insert into cliente (nombre, apellidos, fecha_nac) value ('Aram', 'Villagran', '2012-12-09');
+Query OK, 1 row affected (0.0091 sec)
+ MySQL  localhost:3306  t2  SQL > insert into cliente (nombre, apellidos, fecha_nac) value ('Javier', 'Bernal', '2006-11-16');
+Query OK, 1 row affected (0.0101 sec)
+ MySQL  localhost:3306  t2  SQL > insert into cliente (nombre, apellidos, fecha_nac) value ('Alexis', 'Valles', '2006-10-23');
+Query OK, 1 row affected (0.0095 sec)
+ MySQL  localhost:3306  t2  SQL > create table venta(
+                               -> id_venta int not null key auto_increment,
+                               -> id_cliente int not null,
+                               -> fecha_venta date);
+Query OK, 0 rows affected (0.0138 sec)
+ MySQL  localhost:3306  t2  SQL > insert into venta (id_cliente, fecha_venta)
+                               -> value(1, '2026-10-13');
+Query OK, 1 row affected (0.0126 sec)
+ MySQL  localhost:3306  t2  SQL > insert into venta (id_cliente, fecha_venta) value(2, '2026-10-01');
+Query OK, 1 row affected (0.0110 sec)
+ MySQL  localhost:3306  t2  SQL > insert into venta (id_cliente, fecha_venta) value(1, '2026-10-07');
+Query OK, 1 row affected (0.0098 sec)
+ MySQL  localhost:3306  t2  SQL > insert into venta (id_cliente, fecha_venta) value(4, '2022-10-07');
+Query OK, 1 row affected (0.0099 sec)
+ MySQL  localhost:3306  t2  SQL > insert into venta (id_cliente, fecha_venta) value(3, '2023-03-04');
+Query OK, 1 row affected (0.0098 sec)
+ MySQL  localhost:3306  t2  SQL > insert into venta (id_cliente, fecha_venta) value(7, '2023-03-04');
+Query OK, 1 row affected (0.0108 sec)
+ MySQL  localhost:3306  t2  SQL > select * from venta;
++----------+------------+-------------+
+| id_venta | id_cliente | fecha_venta |
++----------+------------+-------------+
+|        1 |          1 | 2026-10-13  |
+|        2 |          2 | 2026-10-01  |
+|        3 |          1 | 2026-10-07  |
+|        4 |          4 | 2022-10-07  |
+|        5 |          3 | 2023-03-04  |
+|        6 |          7 | 2023-03-04  |
++----------+------------+-------------+
+6 rows in set (0.0012 sec)
+ MySQL  localhost:3306  t2  SQL > select * from cliente
+                               -> where id_cliente in (select distinct (id_cliente) from venta);
++------------+--------+-----------+------------+
+| id_cliente | nombre | apellidos | fecha_nac  |
++------------+--------+-----------+------------+
+|          1 | Juan   | Perez     | 2007-05-05 |
+|          2 | Aram   | Villagran | 2012-12-09 |
+|          3 | Javier | Bernal    | 2006-11-16 |
+|          4 | Alexis | Valles    | 2006-10-23 |
++------------+--------+-----------+------------+
+4 rows in set (0.0033 sec)
+ MySQL  localhost:3306  t2  SQL > select * from cliente where id_cliente not in (select distinct (id_cliente) from venta);
+Empty set (0.0018 sec)
+ MySQL  localhost:3306  t2  SQL > desc cliente;
++------------+-------------+------+-----+---------+----------------+
+| Field      | Type        | Null | Key | Default | Extra          |
++------------+-------------+------+-----+---------+----------------+
+| id_cliente | int(11)     | NO   | PRI | NULL    | auto_increment |
+| nombre     | varchar(50) | NO   |     | NULL    |                |
+| apellidos  | varchar(50) | NO   |     | NULL    |                |
+| fecha_nac  | date        | YES  |     | NULL    |                |
++------------+-------------+------+-----+---------+----------------+
+4 rows in set (0.0353 sec)
+ MySQL  localhost:3306  t2  SQL > desc venta;
++-------------+---------+------+-----+---------+----------------+
+| Field       | Type    | Null | Key | Default | Extra          |
++-------------+---------+------+-----+---------+----------------+
+| id_venta    | int(11) | NO   | PRI | NULL    | auto_increment |
+| id_cliente  | int(11) | NO   |     | NULL    |                |
+| fecha_venta | date    | YES  |     | NULL    |                |
++-------------+---------+------+-----+---------+----------------+
+3 rows in set (0.0294 sec)
+ MySQL  localhost:3306  t2  SQL > select * from venta
+                               -> where id_cliente =1;
++----------+------------+-------------+
+| id_venta | id_cliente | fecha_venta |
++----------+------------+-------------+
+|        1 |          1 | 2026-10-13  |
+|        3 |          1 | 2026-10-07  |
++----------+------------+-------------+
+2 rows in set (0.0009 sec)
+ MySQL  localhost:3306  t2  SQL > delete from cliente
+                               -> where id_cliente=1;
+Query OK, 1 row affected (0.0108 sec)
+ MySQL  localhost:3306  t2  SQL > insert into cliente(id_cliente, nombre, apellidos, fecha_nac)
+                               -> value (1, 'Juan', 'Perez', '2007-05-05');
+Query OK, 1 row affected (0.0115 sec)
+ MySQL  localhost:3306  t2  SQL > select * from cliente;
++------------+--------+-----------+------------+
+| id_cliente | nombre | apellidos | fecha_nac  |
++------------+--------+-----------+------------+
+|          1 | Juan   | Perez     | 2007-05-05 |
+|          2 | Aram   | Villagran | 2012-12-09 |
+|          3 | Javier | Bernal    | 2006-11-16 |
+|          4 | Alexis | Valles    | 2006-10-23 |
++------------+--------+-----------+------------+
+4 rows in set (0.0012 sec)
+ MySQL  localhost:3306  t2  SQL > drop table venta;
+Query OK, 0 rows affected (0.0179 sec)
+ MySQL  localhost:3306  t2  SQL > create table venta( id_venta int not null key auto_increment, id_cliente int not null references cliente(id_cliente), fecha_venta date);
+Query OK, 0 rows affected (0.0140 sec)
+ MySQL  localhost:3306  t2  SQL > insert into venta(id_cliente, fecha_venta)
+                               -> value(1, '2026-09-07');
+Query OK, 1 row affected (0.0125 sec)
+ MySQL  localhost:3306  t2  SQL > insert into venta(id_cliente, fecha_venta) value(5, '2026-05-13');
+Query OK, 1 row affected (0.0106 sec)
+ MySQL  localhost:3306  t2  SQL > show create venta;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'venta' at line 1
+ MySQL  localhost:3306  t2  SQL > show create table venta;
++-------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table | Create Table                                                                                                                                                                                                                                            |
++-------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| venta | CREATE TABLE `venta` (
+  `id_venta` int(11) NOT NULL AUTO_INCREMENT,
+  `id_cliente` int(11) NOT NULL,
+  `fecha_venta` date DEFAULT NULL,
+  PRIMARY KEY (`id_venta`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci |
++-------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.0007 sec)
+ MySQL  localhost:3306  t2  SQL > drop table venta;
+Query OK, 0 rows affected (0.0105 sec)
+ MySQL  localhost:3306  t2  SQL > create table venta( id_venta int not null key auto_increment, id_cliente int not null, fecha_venta date, id_cliente references cliente(id_cliente));
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'references cliente(id_cliente))' at line 1
+ MySQL  localhost:3306  t2  SQL > create table venta( id_venta int not null key auto_increment, id_cliente int not null, fecha_venta date, foreign key id_cliente references cliente(id_cliente));
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'references cliente(id_cliente))' at line 1
+ MySQL  localhost:3306  t2  SQL > create table venta( id_venta int not null key auto_increment, id_cliente int not null, fecha_venta date, foreign key (id_cliente) references cliente(id_cliente));
+Query OK, 0 rows affected (0.0561 sec)
+ MySQL  localhost:3306  t2  SQL > drop table venta;
+Query OK, 0 rows affected (0.0182 sec)
+ MySQL  localhost:3306  t2  SQL > create table venta( id_venta int not null key auto_increment, id_cliente int not null, fecha_venta date, foreing key (id_cliente) references cliente(id_cliente));
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'key (id_cliente) references cliente(id_cliente))' at line 1
+ MySQL  localhost:3306  t2  SQL > create table venta( id_venta int not null key auto_increment, id_cliente int not null, fecha_venta date, foreign key (id_cliente) references cliente(id_cliente));
+Query OK, 0 rows affected (0.0576 sec)
+ MySQL  localhost:3306  t2  SQL > show create table venta;
++-------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table | Create Table                                                                                                                                                                                                                                                                                                                                                          |
++-------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| venta | CREATE TABLE `venta` (
+  `id_venta` int(11) NOT NULL AUTO_INCREMENT,
+  `id_cliente` int(11) NOT NULL,
+  `fecha_venta` date DEFAULT NULL,
+  PRIMARY KEY (`id_venta`),
+  KEY `id_cliente` (`id_cliente`),
+  CONSTRAINT `venta_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci |
++-------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.0031 sec)
+ MySQL  localhost:3306  t2  SQL > insert into venta(id_cliente, fecha_venta) value(5, '2026-05-13');
+ERROR: 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`t2`.`venta`, CONSTRAINT `venta_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`))
+ MySQL  localhost:3306  t2  SQL > insert into venta(id_cliente, fecha_venta) value(4, '2026-05-13');
+Query OK, 1 row affected (0.0106 sec)
+ MySQL  localhost:3306  t2  SQL > insert into venta(id_cliente, fecha_venta) value(1, '2026-05-13');
+Query OK, 1 row affected (0.0106 sec)
+ MySQL  localhost:3306  t2  SQL > insert into venta(id_cliente, fecha_venta) value(1, '2026-05-13');
+Query OK, 1 row affected (0.0102 sec)
+ MySQL  localhost:3306  t2  SQL > insert into venta(id_cliente, fecha_venta) value(2, '2026-05-13');
+Query OK, 1 row affected (0.0101 sec)
+ MySQL  localhost:3306  t2  SQL > insert into venta(id_cliente, fecha_venta) value(13, '2026-05-13');
+ERROR: 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`t2`.`venta`, CONSTRAINT `venta_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`))
+ MySQL  localhost:3306  t2  SQL > select * cliente;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'cliente' at line 1
+ MySQL  localhost:3306  t2  SQL > select * from cliente;
++------------+--------+-----------+------------+
+| id_cliente | nombre | apellidos | fecha_nac  |
++------------+--------+-----------+------------+
+|          1 | Juan   | Perez     | 2007-05-05 |
+|          2 | Aram   | Villagran | 2012-12-09 |
+|          3 | Javier | Bernal    | 2006-11-16 |
+|          4 | Alexis | Valles    | 2006-10-23 |
++------------+--------+-----------+------------+
+4 rows in set (0.0008 sec)
+ MySQL  localhost:3306  t2  SQL > delete from cliente
+                               -> where id_cliente=1;
+ERROR: 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails (`t2`.`venta`, CONSTRAINT `venta_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`))
+ MySQL  localhost:3306  t2  SQL > update cliente
+                               -> set
+                               -> id_cliente= 5
+                               -> where id cliente=1;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'cliente=1' at line 4
+ MySQL  localhost:3306  t2  SQL > update cliente set  id_cliente= 5 where id_cliente=1;
+ERROR: 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails (`t2`.`venta`, CONSTRAINT `venta_ibfk_1` FOREIGN KEY (`id_cliente`) REFERENCES `cliente` (`id_cliente`))
+ MySQL  localhost:3306  t2  SQL >
