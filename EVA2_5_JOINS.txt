@@ -1,0 +1,215 @@
+Microsoft Windows [Version 10.0.26200.9711]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\Javis>mysqlsh
+MySQL Shell 8.4.5
+
+Copyright (c) 2016, 2025, Oracle and/or its affiliates.
+Oracle is a registered trademark of Oracle Corporation and/or its affiliates.
+Other names may be trademarks of their respective owners.
+
+Type '\help' or '\?' for help; '\quit' to exit.
+ MySQL  SQL > \connect --mc root@localhost
+Creating a Classic session to 'root@localhost'
+Fetching global names for auto-completion... Press ^C to stop.
+Your MySQL connection id is 8
+Server version: 10.4.32-MariaDB mariadb.org binary distribution
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306  SQL > \connect --mc root@localhost
+Creating a Classic session to 'root@localhost'
+Fetching global names for auto-completion... Press ^C to stop.
+Closing old connection...
+Your MySQL connection id is 9
+Server version: 10.4.32-MariaDB mariadb.org binary distribution
+No default schema selected; type \use <schema> to set one.
+ MySQL  localhost:3306  SQL > use t2;
+Default schema set to `t2`.
+Fetching global names, object names from `t2` for auto-completion... Press ^C to stop.
+ MySQL  localhost:3306  t2  SQL > select * from
+                               -> venta a
+                               -> inner join venta b^C
+ MySQL  localhost:3306  t2  SQL > select * from
+                               -> venta a
+                               -> inner join cliente b
+                               -> on a.id_cliente = b.id_cliente
+                               -> ;
++----------+------------+-------------+------------+--------+-----------+------------+
+| id_venta | id_cliente | fecha_venta | id_cliente | nombre | apellidos | fecha_nac  |
++----------+------------+-------------+------------+--------+-----------+------------+
+|        2 |          7 | 2026-05-13  |          7 | Alexis | Valles    | 2006-10-23 |
++----------+------------+-------------+------------+--------+-----------+------------+
+1 row in set (0.0040 sec)
+ MySQL  localhost:3306  t2  SQL > select a.id_cliente, b.nombre, b.apellidos, a.id_venta, a.fecha_venta
+                               -> from vetna a
+                               -> inner join cliente b
+                               -> on a.id_cliente = b.id_cliente;
+ERROR: 1146 (42S02): Table 't2.vetna' doesn't exist
+ MySQL  localhost:3306  t2  SQL > select a.id_cliente, b.nombre, b.apellidos, a.id_venta, a.fecha_venta from venta a inner join cliente b on a.id_cliente = b.id_cliente;
++------------+--------+-----------+----------+-------------+
+| id_cliente | nombre | apellidos | id_venta | fecha_venta |
++------------+--------+-----------+----------+-------------+
+|          7 | Alexis | Valles    |        2 | 2026-05-13  |
++------------+--------+-----------+----------+-------------+
+1 row in set (0.0014 sec)
+ MySQL  localhost:3306  t2  SQL > select * from venta_detalle
+                               -> ;
++------------------+----------+-------------+----------+
+| id_venta_detalle | id_venta | id_producto | cantidad |
++------------------+----------+-------------+----------+
+|                1 |        2 |           2 |        1 |
+|                3 |        2 |           4 |        7 |
++------------------+----------+-------------+----------+
+2 rows in set (0.0024 sec)
+ MySQL  localhost:3306  t2  SQL > select *from producto;
++-------------+----------+-------+--------+
+| id_producto | name     | price | unidad |
++-------------+----------+-------+--------+
+|           1 | Playera  |   500 | pieza  |
+|           2 | pantalon |   200 | pieza  |
+|           4 | bolsas   |  5000 | oz     |
++-------------+----------+-------+--------+
+3 rows in set (0.0017 sec)
+ MySQL  localhost:3306  t2  SQL > insert into producto
+                               -> value (3, 'Bermuda', 1456, 'Pieza');
+Query OK, 1 row affected (0.0111 sec)
+ MySQL  localhost:3306  t2  SQL > select *from producto;
++-------------+----------+-------+--------+
+| id_producto | name     | price | unidad |
++-------------+----------+-------+--------+
+|           1 | Playera  |   500 | pieza  |
+|           2 | pantalon |   200 | pieza  |
+|           3 | Bermuda  |  1456 | Pieza  |
+|           4 | bolsas   |  5000 | oz     |
++-------------+----------+-------+--------+
+4 rows in set (0.0010 sec)
+ MySQL  localhost:3306  t2  SQL > select b.id_producto, a.name, a.price, b.cantidad
+                               -> from producto a
+                               -> inner join venta_detalle b
+                               -> on a.id_producto = b.id_producto;
++-------------+----------+-------+----------+
+| id_producto | name     | price | cantidad |
++-------------+----------+-------+----------+
+|           2 | pantalon |   200 |        1 |
+|           4 | bolsas   |  5000 |        7 |
++-------------+----------+-------+----------+
+2 rows in set (0.0015 sec)
+ MySQL  localhost:3306  t2  SQL > select b.id_producto, a.name, a.price, b.cantidad, a.price * b.cantidad from producto a inner join venta_detalle b on a.id_producto = b.id_producto;
++-------------+----------+-------+----------+----------------------+
+| id_producto | name     | price | cantidad | a.price * b.cantidad |
++-------------+----------+-------+----------+----------------------+
+|           2 | pantalon |   200 |        1 |                  200 |
+|           4 | bolsas   |  5000 |        7 |                35000 |
++-------------+----------+-------+----------+----------------------+
+2 rows in set (0.0013 sec)
+ MySQL  localhost:3306  t2  SQL > select b.id_producto, a.name, a.price, b.cantidad, (a.price * b.cantidad) as total from producto a inner join venta_detalle b on a.id_producto = b.id_producto;
++-------------+----------+-------+----------+-------+
+| id_producto | name     | price | cantidad | total |
++-------------+----------+-------+----------+-------+
+|           2 | pantalon |   200 |        1 |   200 |
+|           4 | bolsas   |  5000 |        7 | 35000 |
++-------------+----------+-------+----------+-------+
+2 rows in set (0.0011 sec)
+ MySQL  localhost:3306  t2  SQL > select b.id_producto, a.name, a.price, b.cantidad, (a.price * b.cantidad) as total from producto a left join venta_detalle b on a.id_producto = b.id_producto;
++-------------+----------+-------+----------+-------+
+| id_producto | name     | price | cantidad | total |
++-------------+----------+-------+----------+-------+
+|           2 | pantalon |   200 |        1 |   200 |
+|           4 | bolsas   |  5000 |        7 | 35000 |
+|        NULL | Playera  |   500 |     NULL |  NULL |
+|        NULL | Bermuda  |  1456 |     NULL |  NULL |
++-------------+----------+-------+----------+-------+
+4 rows in set (0.0103 sec)
+ MySQL  localhost:3306  t2  SQL > select b.id_producto, a.name, a.price, b.cantidad, (a.price * b.cantidad) as total from producto a left join venta_detalle b on a.id_producto = b.id_producto where b.id_productois null;
+ERROR: 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'null' at line 1
+ MySQL  localhost:3306  t2  SQL > select b.id_producto, a.name, a.price, b.cantidad, (a.price * b.cantidad) as total from producto a left join venta_detalle b on a.id_producto = b.id_producto where b.id_producto is null;
++-------------+---------+-------+----------+-------+
+| id_producto | name    | price | cantidad | total |
++-------------+---------+-------+----------+-------+
+|        NULL | Playera |   500 |     NULL |  NULL |
+|        NULL | Bermuda |  1456 |     NULL |  NULL |
++-------------+---------+-------+----------+-------+
+2 rows in set (0.0011 sec)
+ MySQL  localhost:3306  t2  SQL > select b.id_producto, a.name, a.price, b.cantidad, (a.price * b.cantidad) as total from producto a left join venta_detalle b on a.id_producto = b.id_producto where b.id_producto is not null;
++-------------+----------+-------+----------+-------+
+| id_producto | name     | price | cantidad | total |
++-------------+----------+-------+----------+-------+
+|           2 | pantalon |   200 |        1 |   200 |
+|           4 | bolsas   |  5000 |        7 | 35000 |
++-------------+----------+-------+----------+-------+
+2 rows in set (0.0012 sec)
+ MySQL  localhost:3306  t2  SQL > insert into cliente
+                               -> value (7, 'pedro', 'paramo', '1950-10-10');
+ERROR: 1062 (23000): Duplicate entry '7' for key 'PRIMARY'
+ MySQL  localhost:3306  t2  SQL > insert into cliente value (10, 'pedro', 'paramo', '1950-10-10');
+Query OK, 1 row affected (0.0106 sec)
+ MySQL  localhost:3306  t2  SQL > select a.nombre, a.apellidos, b.id_venta from cliente a left join venta b on a.id_cliente = b.id_cliente;
++--------+-----------+----------+
+| nombre | apellidos | id_venta |
++--------+-----------+----------+
+| Javier | Bernal    |     NULL |
+| Alexis | Valles    |        2 |
+| pedro  | paramo    |     NULL |
++--------+-----------+----------+
+3 rows in set (0.0016 sec)
+ MySQL  localhost:3306  t2  SQL > select a.nombre, a.apellidos, b.id_venta from cliente a left join venta b on a.id_cliente = b.id_cliente where id_venta is not null;
++--------+-----------+----------+
+| nombre | apellidos | id_venta |
++--------+-----------+----------+
+| Alexis | Valles    |        2 |
++--------+-----------+----------+
+1 row in set (0.0009 sec)
+ MySQL  localhost:3306  t2  SQL > select a.nombre, a.apellidos, b.id_venta from cliente a left join venta b on a.id_cliente = b.id_cliente where id_venta is null;
++--------+-----------+----------+
+| nombre | apellidos | id_venta |
++--------+-----------+----------+
+| Javier | Bernal    |     NULL |
+| pedro  | paramo    |     NULL |
++--------+-----------+----------+
+2 rows in set (0.0010 sec)
+ MySQL  localhost:3306  t2  SQL > select a.nombre, a.apellidos, d.nombre, c.cantidad, d.precio, (c.cantidad * d.precio)as total
+                               -> from cliente a
+                               -> left join venta a b on a.id_cliente = b.id_cliente
+                               -> left join venta_detalle c on b.id_venta = c.id_venta
+                               -> left join producto d on d.id_producto = c.id_producto;
+ERROR: 1066 (42000): Not unique table/alias: 'a'
+ MySQL  localhost:3306  t2  SQL > select a.nombre, a.apellidos, d.nombre, c.cantidad, d.precio, (c.cantidad * d.precio)as total from cliente a left join venta b on a.id_cliente = b.id_cliente left join venta_detalle c on b.id_venta = c.id_venta left join producto d on d.id_producto = c.id_producto;
+ERROR: 1054 (42S22): Unknown column 'd.nombre' in 'field list'
+ MySQL  localhost:3306  t2  SQL > select a.nombre, a.apellidos, d.name, c.cantidad, d.price, (c.cantidad * d.precio)as total from cliente a left join venta b on a.id_cliente = b.id_cliente left join venta_detalle c on b.id_venta = c.id_venta left join producto d on d.id_producto = c.id_producto;
+ERROR: 1054 (42S22): Unknown column 'd.precio' in 'field list'
+ MySQL  localhost:3306  t2  SQL > select a.nombre, a.apellidos, d.name, c.cantidad, d.price, (c.cantidad * d.price)as total from cliente a left join venta b on a.id_cliente = b.id_cliente left join venta_detalle c on b.id_venta = c.id_venta left join producto d on d.id_producto = c.id_producto;
++--------+-----------+----------+----------+-------+-------+
+| nombre | apellidos | name     | cantidad | price | total |
++--------+-----------+----------+----------+-------+-------+
+| Alexis | Valles    | pantalon |        1 |   200 |   200 |
+| Alexis | Valles    | bolsas   |        7 |  5000 | 35000 |
+| Javier | Bernal    | NULL     |     NULL |  NULL |  NULL |
+| pedro  | paramo    | NULL     |     NULL |  NULL |  NULL |
++--------+-----------+----------+----------+-------+-------+
+4 rows in set (0.0015 sec)
+ MySQL  localhost:3306  t2  SQL > select a.nombre, a.apellidos, (d.name) as producto, c.cantidad, d.price, (c.cantidad * d.price)as total from cliente a left join venta b on a.id_cliente = b.id_cliente left join venta_detalle c on b.id_venta = c.id_venta left join producto d on d.id_producto = c.id_producto;
++--------+-----------+----------+----------+-------+-------+
+| nombre | apellidos | producto | cantidad | price | total |
++--------+-----------+----------+----------+-------+-------+
+| Alexis | Valles    | pantalon |        1 |   200 |   200 |
+| Alexis | Valles    | bolsas   |        7 |  5000 | 35000 |
+| Javier | Bernal    | NULL     |     NULL |  NULL |  NULL |
+| pedro  | paramo    | NULL     |     NULL |  NULL |  NULL |
++--------+-----------+----------+----------+-------+-------+
+4 rows in set (0.0016 sec)
+ MySQL  localhost:3306  t2  SQL > select a.nombre, a.apellidos, (d.name) as producto, c.cantidad, d.price, (c.cantidad * d.price)as total from cliente a left join venta b on a.id_cliente = b.id_cliente left join venta_detalle c on b.id_venta = c.id_venta left join producto d on d.id_producto = c.id_producto where b.id_cliente is null;
++--------+-----------+----------+----------+-------+-------+
+| nombre | apellidos | producto | cantidad | price | total |
++--------+-----------+----------+----------+-------+-------+
+| Javier | Bernal    | NULL     |     NULL |  NULL |  NULL |
+| pedro  | paramo    | NULL     |     NULL |  NULL |  NULL |
++--------+-----------+----------+----------+-------+-------+
+2 rows in set (0.0016 sec)
+ MySQL  localhost:3306  t2  SQL > select a.nombre, a.apellidos, (d.name) as producto, c.cantidad, d.price, (c.cantidad * d.price)as total from cliente a left join venta b on a.id_cliente = b.id_cliente left join venta_detalle c on b.id_venta = c.id_venta left join producto d on d.id_producto = c.id_producto where b.id_cliente is not null;
++--------+-----------+----------+----------+-------+-------+
+| nombre | apellidos | producto | cantidad | price | total |
++--------+-----------+----------+----------+-------+-------+
+| Alexis | Valles    | pantalon |        1 |   200 |   200 |
+| Alexis | Valles    | bolsas   |        7 |  5000 | 35000 |
++--------+-----------+----------+----------+-------+-------+
+2 rows in set (0.0011 sec)
+ MySQL  localhost:3306  t2  SQL >
